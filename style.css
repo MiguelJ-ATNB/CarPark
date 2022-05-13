@@ -1,0 +1,13 @@
+html{
+    text-align: center;
+    background-image: url(imgs/Sunset-Sky.jpg);
+    background-repeat: no-repeat;
+    background-size: 1920px 1080px;
+}
+#canv{
+    background-color: white;
+    border-radius: 2px;
+    border-width: 4px;
+    border-style: solid;
+    border-color: tomato;
+}
