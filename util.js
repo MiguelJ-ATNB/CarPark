@@ -5,17 +5,27 @@ cnv.height = 800;
 
 let x = 200;
 let y = 200;
-let w = 20;
-let h = 35;
+let w = 35;
+let h = 20;
 let speed = 0;
 let aspeed = 0.5;
+let maxspeed = 20;
+let turnspeed = 2;
+let angle = 0;
+
+let pHeight = 35;
+let pWidth = 20;
+
 //Move Variables
 let upMove = false;
 let downMove = false;
 let leftTurn = false
+let rightTurn = false;
+let cVar = "red";
 
 
-let cnvRect = cnv.getBoundingClientRect();
+
+
 //Movement Functions I stole from albert. 
 document.addEventListener("keydown", MovementHandler)
 document.addEventListener("keyup", MoveStopHandler)
@@ -25,7 +35,7 @@ function MovementHandler(event) {
     if (event.code === "ShiftLeft") {
         sprint = true;
     } else if (event.code === "ArrowRight" || event.code === "KeyD") {
-        rightMove = true;
+        rightTurn = true;
     } else if (event.code === "ArrowUp" || event.code === "KeyW") {
         upMove = true;
     } else if (event.code === "ArrowDown" || event.code === "KeyS") {
@@ -40,7 +50,7 @@ function MoveStopHandler(event) {
     if (event.code === "ShiftLeft") {
         sprint = false;
     } else if (event.code === "ArrowRight" || event.code === "KeyD") {
-        rightMove = false;
+        rightTurn = false;
     } else if (event.code === "ArrowUp" || event.code === "KeyW") {
         upMove = false;
     } else if (event.code === "ArrowDown" || event.code === "KeyS") {
@@ -55,10 +65,24 @@ function MoveStopHandler(event) {
 requestAnimationFrame(draw);
 
 function draw() {
+
     ctx.fillStyle = "white"
     ctx.fillRect(0, 0, cnv.width, cnv.height)
-    y += speed
-
+    
+    let AngleRad = angle * (Math.PI / 180);
+    if(-maxspeed < speed && speed < maxspeed){
+        // x and y cos and sin. Multiply by speed. Get angles into Radians
+        x += Math.cos(AngleRad) * speed;
+        y += Math.sin(AngleRad) * speed;
+    }else{
+        x += Math.cos(AngleRad) * speed;
+        y += Math.sin(AngleRad) * speed;
+        if(speed > 0){
+            speed = maxspeed
+        }else{
+            speed = -maxspeed
+        }
+    }
     //Movement Handler
     if (upMove) {
         speed += aspeed
@@ -75,19 +99,44 @@ function draw() {
         }
     }
     if (leftTurn) {
-        ctx.save();
-        ctx.translate(x, y)
-        ctx.rotate(160 * Math.PI / 180);
-        ctx.restore();
+        angle -= turnspeed 
+    }
+    if (rightTurn) {
+        angle += turnspeed 
+    }
+    if(y > cnv.height ){
+        y = cnv.height - cnv.height
+    }else if( y < cnv.height - cnv.height){
+        y = cnv.height 
+    }else if(x < cnv.width - cnv.width){
+        x = cnv.width
+    }else if(x > cnv.width){
+        x = cnv.width - cnv.width
+    }
 
+    ctx.save();
+    ctx.translate(x + w/2 , y + h/2)
+    ctx.rotate(angle * Math.PI / 180);
+    ctx.fillStyle = cVar;
+    ctx.fillRect(-w/2, -h/2, w, h);
+    ctx.restore();
+
+    console.log(x,y)
+    
+    class parkSpot {
+        constructor(height, width) {
+            this.height = pHeight;
+            this.width = pWidth;
+            
+        }
     }
 
 
-    console.log(x, y)
+    if(x>= 200 && x + w<= 400 && y>=200 && y+h<=400){
+        //console.log("UR BUM KID")
 
-
-    ctx.fillStyle = "red";
-    ctx.fillRect(x, y, w, h);
+    }
 
     requestAnimationFrame(draw)
+
 }
